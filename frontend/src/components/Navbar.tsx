@@ -3,6 +3,7 @@ import { Bars3Icon, MoonIcon, SunIcon, XMarkIcon } from "@heroicons/react/24/out
 import { Link, NavLink } from "react-router-dom";
 import { NavLinks } from "../data";
 import { useState } from "react";
+import logo from "../../public/logo.webp";
 
 function classNames(...classes: string[]): string {
     return classes.filter(Boolean).join(" ");
@@ -12,7 +13,7 @@ const Navbar = () => {
     const [isDark, setIsDark] = useState<boolean>(false);
 
     return (
-        <Disclosure as="nav" className="bg-gray-800 rounded-lg">
+        <Disclosure as="nav" className="bg-[#343A40] rounded-lg ">
             <div className="mx-auto  max-w-7xl px-2 sm:px-6 lg:px-8">
                 <div className="relative flex h-16 items-center justify-between">
                     {/* Mobile menu button*/}
@@ -28,14 +29,14 @@ const Navbar = () => {
 
                     {/* Center Mode Section */}
                     <button type="button" className="absolute left-1/2 -translate-x-1/2" onClick={() => setIsDark((prev) => !prev)}>
-                        {isDark ? <MoonIcon width={24} className="text-white" /> : <SunIcon width={24} className="text-white" />}
+                        {isDark ? <MoonIcon width={24} className="text-[#F8F9FA]" /> : <SunIcon width={24} className="text-[#F8F9FA]" />}
                     </button>
 
                     {/* Logo Section */}
 
-                    <div className="flex absolute left-0 items-center">
+                    <div className="flex absolute left-0 items-center bg-red-900">
                         <Link to={"/"}>
-                            <img alt="Your Company" src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=500" className="h-8 w-auto" />
+                            <img alt="Your Company" src={logo} className="h-10" />
                         </Link>
                     </div>
 

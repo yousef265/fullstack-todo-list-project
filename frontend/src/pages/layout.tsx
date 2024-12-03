@@ -4,10 +4,11 @@ import Navbar from "../components/Navbar";
 function RootLayout() {
     return (
         <>
-            <div className=" bg-black">
-                <div className="container space-y-5 min-h-svh bg-yellow-400 py-4">
+            <div className="bg-gray-600">
+                <div className="container space-y-5 py-5  min-h-screen">
                     <Navbar />
-                    <div className="bg-blue-600 mx-2 ">
+
+                    <div className="mx-2 relative">
                         <Outlet />
                     </div>
                 </div>
