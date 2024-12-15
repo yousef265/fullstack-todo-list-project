@@ -13,7 +13,7 @@ function RegisterPage({}: IProps) {
     return (
         <>
             <div className="max-w-md mx-auto mt-10 bg-[#343A40] p-4 rounded-lg text-slate-300 ">
-                <h2 className="text-center mb-4 text-3xl font-semibold">Register to get access!</h2>
+                <h2 className="text-center mb-4 text-2xl md:text-3xl font-semibold">Register to get access!</h2>
                 <form className="space-y-4 ">
                     {RenderRegisterInputs}
                     <Button type="button" fullWidth>
