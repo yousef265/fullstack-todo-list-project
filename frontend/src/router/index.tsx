@@ -4,15 +4,39 @@ import HomePage from "../pages";
 import LoginPage from "../pages/Login";
 import RegisterPage from "../pages/Register";
 import NotFoundPage from "../pages/NotFound";
+import ProtectedRoute from "../components/auth/ProtectedRoute";
+
+const isAllowed: boolean = true;
 
 const routes = createRoutesFromElements(
     <>
         {/*  ROOT LAYOUT */}
 
         <Route path="/" element={<RootLayout />}>
-            <Route index element={<HomePage />} />
-            <Route path="login" element={<LoginPage />} />
-            <Route path="register" element={<RegisterPage />} />
+            <Route
+                index
+                element={
+                    <ProtectedRoute isAllowed={isAllowed} redirectPath="/login">
+                        <HomePage />
+                    </ProtectedRoute>
+                }
+            />
+            <Route
+                path="login"
+                element={
+                    <ProtectedRoute isAllowed={!isAllowed} redirectPath="/">
+                        <LoginPage />
+                    </ProtectedRoute>
+                }
+            />
+            <Route
+                path="register"
+                element={
+                    <ProtectedRoute isAllowed={!isAllowed} redirectPath="/">
+                        <RegisterPage />
+                    </ProtectedRoute>
+                }
+            />
         </Route>
 
         {/*  NOT FOUND PAGE */}

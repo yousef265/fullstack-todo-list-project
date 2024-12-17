@@ -9,7 +9,7 @@ const buttonVariants = cva(
             variant: {
                 // ** FILLED
                 default: "bg-transparent mx-auto border-2 border-indigo-500 dark:bg-indigo-600 dark:text-white dark:hover:bg-indigo-700 active:bg-indigo-600 hover:bg-indigo-500",
-                danger: "bg-red-900 dark:bg-[#c2344d] dark:text-white dark:hover:bg-red-700",
+                danger: "bg-red-900 dark:bg-[#c2344d] hover:bg-red-700 active:bg-red-800 dark:text-white dark:hover:bg-red-700",
                 cancel: "bg-gray-300 text-gray-700 dark:bg-[#f5f5fa] dark:text-dark hover:bg-gray-400 dark:hover:bg-gray-200",
 
                 // ** OUTLINE

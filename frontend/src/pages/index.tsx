@@ -1,9 +1,13 @@
+import Todos from "../components/ui/Todos";
+
 interface IProps {}
 
 function HomePage({}: IProps) {
     return (
         <>
-            <div>Home Page</div>
+            <main className="container">
+                <Todos />
+            </main>
         </>
     );
 }
