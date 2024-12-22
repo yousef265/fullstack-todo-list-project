@@ -15,3 +15,20 @@ export interface IRegister {
     type: string;
     placeholder: string;
 }
+
+export interface IFormInput {
+    username: string;
+    email: string;
+    password: string;
+}
+
+export interface IErrorResponse {
+    error: {
+        // details?: {
+        //   errors: {
+        //     message: string;
+        //   }[];
+        // };
+        message?: string;
+    };
+}

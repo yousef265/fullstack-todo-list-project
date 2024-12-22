@@ -6,7 +6,7 @@ import RegisterPage from "../pages/Register";
 import NotFoundPage from "../pages/NotFound";
 import ProtectedRoute from "../components/auth/ProtectedRoute";
 
-const isAllowed: boolean = true;
+const isAllowed: boolean = false;
 
 const routes = createRoutesFromElements(
     <>
