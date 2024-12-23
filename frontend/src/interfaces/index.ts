@@ -16,9 +16,14 @@ export interface IRegister {
     placeholder: string;
 }
 
-export interface IFormInput {
+export interface IRegisterFormInput {
     username: string;
     email: string;
+    password: string;
+}
+
+export interface ILoginFormInput {
+    identifier: string;
     password: string;
 }
 

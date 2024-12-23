@@ -5,7 +5,7 @@ import InputMessageError from "../components/InputMessageError";
 import Button from "../components/ui/Button";
 import Input from "../components/ui/Input";
 import { RegisterInputs } from "../data";
-import { IErrorResponse, IFormInput } from "../interfaces";
+import { IErrorResponse, IRegisterFormInput } from "../interfaces";
 import { registerSchema } from "../validation";
 import { useState } from "react";
 import axiosInstance from "../config/axios.config";
@@ -24,19 +24,17 @@ function RegisterPage({}: IProps) {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm<IFormInput>({
+    } = useForm<IRegisterFormInput>({
         resolver: yupResolver(registerSchema),
     });
-    const onSubmit: SubmitHandler<IFormInput> = async (userdata) => {
-        console.log(userdata);
-
+    const onSubmit: SubmitHandler<IRegisterFormInput> = async (userdata) => {
         // ** -1 PENDING
         setIsLoading(true);
 
         try {
             // ** -2 SUCCESS
-            const { data } = await axiosInstance.post(`/auth/local/register`, userdata);
-            console.log(data);
+            await axiosInstance.post(`/auth/local/register`, userdata);
+
             toast.success("You will navigate to the login page after 2 seconds to login!", {
                 position: "bottom-center",
                 duration: 2000,
