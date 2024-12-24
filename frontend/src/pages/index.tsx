@@ -1,11 +1,11 @@
-import Todos from "../components/ui/Todos";
+import Todos from "../components/Todos";
 
 interface IProps {}
 
 function HomePage({}: IProps) {
     return (
         <>
-            <main className="container">
+            <main>
                 <Todos />
             </main>
         </>

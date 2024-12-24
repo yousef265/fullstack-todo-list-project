@@ -1,22 +1,21 @@
-import { Link, useNavigate } from "react-router-dom";
-import Button from "../components/ui/Button";
-import Input from "../components/ui/Input";
-import { LoginInputs } from "../data";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { AxiosError } from "axios";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { loginSchema } from "../validation";
-import { IErrorResponse, ILoginFormInput } from "../interfaces";
-import axiosInstance from "../config/axios.config";
 import toast from "react-hot-toast";
-import { AxiosError } from "axios";
+import { Link } from "react-router-dom";
 import InputMessageError from "../components/InputMessageError";
+import Button from "../components/ui/Button";
+import Input from "../components/ui/Input";
+import axiosInstance from "../config/axios.config";
+import { LoginInputs } from "../data";
+import { IErrorResponse, ILoginFormInput } from "../interfaces";
+import { loginSchema } from "../validation";
 
 interface IProps {}
 
 function LoginPage({}: IProps) {
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const navigate = useNavigate();
 
     // ---------HANDLERS---------
 
@@ -33,7 +32,7 @@ function LoginPage({}: IProps) {
 
         try {
             // ** -2 SUCCESS
-            await axiosInstance.post(`/auth/local`, userdata);
+            const { data } = await axiosInstance.post(`/auth/local`, userdata);
 
             toast.success("You will navigate to the home page after 2", {
                 position: "bottom-center",
@@ -45,8 +44,10 @@ function LoginPage({}: IProps) {
                 },
             });
 
+            localStorage.setItem("loggedInUser", JSON.stringify(data));
+
             setTimeout(() => {
-                navigate("/");
+                location.replace("/");
             }, 2000);
         } catch (error) {
             // ** -3 ERROR
@@ -54,7 +55,7 @@ function LoginPage({}: IProps) {
             const errorObj = error as AxiosError<IErrorResponse>;
             toast.error(`${errorObj.response?.data.error.message}`, {
                 position: "bottom-center",
-                duration: 2000,
+                duration: 3000,
                 style: {
                     backgroundColor: "black",
                     color: "white",

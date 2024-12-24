@@ -53,7 +53,7 @@ function RegisterPage({}: IProps) {
             const errorObj = error as AxiosError<IErrorResponse>;
             toast.error(`${errorObj.response?.data.error.message}`, {
                 position: "bottom-center",
-                duration: 2000,
+                duration: 3000,
                 style: {
                     backgroundColor: "black",
                     color: "white",

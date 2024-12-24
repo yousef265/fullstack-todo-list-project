@@ -6,7 +6,8 @@ import RegisterPage from "../pages/Register";
 import NotFoundPage from "../pages/NotFound";
 import ProtectedRoute from "../components/auth/ProtectedRoute";
 
-const isAllowed: boolean = false;
+const userDataString = localStorage.getItem("loggedInUser");
+const userData = userDataString ? JSON.parse(userDataString) : null;
 
 const routes = createRoutesFromElements(
     <>
@@ -16,7 +17,7 @@ const routes = createRoutesFromElements(
             <Route
                 index
                 element={
-                    <ProtectedRoute isAllowed={isAllowed} redirectPath="/login">
+                    <ProtectedRoute isAllowed={userData} redirectPath="/login">
                         <HomePage />
                     </ProtectedRoute>
                 }
@@ -24,7 +25,7 @@ const routes = createRoutesFromElements(
             <Route
                 path="login"
                 element={
-                    <ProtectedRoute isAllowed={!isAllowed} redirectPath="/">
+                    <ProtectedRoute isAllowed={!userData} redirectPath="/">
                         <LoginPage />
                     </ProtectedRoute>
                 }
@@ -32,7 +33,7 @@ const routes = createRoutesFromElements(
             <Route
                 path="register"
                 element={
-                    <ProtectedRoute isAllowed={!isAllowed} redirectPath="/">
+                    <ProtectedRoute isAllowed={!userData} redirectPath="/">
                         <RegisterPage />
                     </ProtectedRoute>
                 }
