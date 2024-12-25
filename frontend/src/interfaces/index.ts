@@ -1,3 +1,4 @@
+import { AxiosRequestConfig } from "axios";
 import { TLoginName, TRegisterName } from "./../types/index";
 export interface INavLinks {
     name: string;
@@ -36,4 +37,15 @@ export interface IErrorResponse {
         // };
         message?: string;
     };
+}
+
+export interface ITodo {
+    id: number;
+    title: string;
+}
+
+export interface IAuthenticatedQuery {
+    queryKey: string[];
+    url: string;
+    config?: AxiosRequestConfig;
 }
