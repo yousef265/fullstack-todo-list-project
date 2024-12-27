@@ -2,9 +2,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { AxiosError } from "axios";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import InputMessageError from "../components/InputMessageError";
+import Toaster from "../components/toaster";
 import Button from "../components/ui/Button";
 import Input from "../components/ui/Input";
 import axiosInstance from "../config/axios.config";
@@ -34,15 +34,7 @@ function LoginPage({}: IProps) {
             // ** -2 SUCCESS
             const { data } = await axiosInstance.post(`/auth/local`, userdata);
 
-            toast.success("You will navigate to the home page after 2", {
-                position: "bottom-center",
-                duration: 2000,
-                style: {
-                    backgroundColor: "black",
-                    color: "white",
-                    width: "fit-content",
-                },
-            });
+            Toaster({ message: "You will navigate to the home page after 2", toastType: "success" });
 
             localStorage.setItem("loggedInUser", JSON.stringify(data));
 
@@ -53,15 +45,7 @@ function LoginPage({}: IProps) {
             // ** -3 ERROR
 
             const errorObj = error as AxiosError<IErrorResponse>;
-            toast.error(`${errorObj.response?.data.error.message}`, {
-                position: "bottom-center",
-                duration: 3000,
-                style: {
-                    backgroundColor: "black",
-                    color: "white",
-                    width: "fit-content",
-                },
-            });
+            Toaster({ message: `${errorObj.response?.data.error.message}`, toastType: "error" });
         } finally {
             setIsLoading(false);
         }

@@ -1,16 +1,16 @@
 import { yupResolver } from "@hookform/resolvers/yup";
+import { AxiosError } from "axios";
+import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import InputMessageError from "../components/InputMessageError";
+import Toaster from "../components/toaster";
 import Button from "../components/ui/Button";
 import Input from "../components/ui/Input";
+import axiosInstance from "../config/axios.config";
 import { RegisterInputs } from "../data";
 import { IErrorResponse, IRegisterFormInput } from "../interfaces";
 import { registerSchema } from "../validation";
-import { useState } from "react";
-import axiosInstance from "../config/axios.config";
-import toast from "react-hot-toast";
-import { AxiosError } from "axios";
 
 interface IProps {}
 
@@ -34,16 +34,7 @@ function RegisterPage({}: IProps) {
         try {
             // ** -2 SUCCESS
             await axiosInstance.post(`/auth/local/register`, userdata);
-
-            toast.success("You will navigate to the login page after 2 seconds to login!", {
-                position: "bottom-center",
-                duration: 2000,
-                style: {
-                    backgroundColor: "black",
-                    color: "white",
-                    width: "fit-content",
-                },
-            });
+            Toaster({ message: "You will navigate to the login page after 2 seconds to login!", toastType: "success" });
 
             setTimeout(() => {
                 navigate("/login");
@@ -51,15 +42,7 @@ function RegisterPage({}: IProps) {
         } catch (error) {
             // ** -3 ERROR
             const errorObj = error as AxiosError<IErrorResponse>;
-            toast.error(`${errorObj.response?.data.error.message}`, {
-                position: "bottom-center",
-                duration: 3000,
-                style: {
-                    backgroundColor: "black",
-                    color: "white",
-                    width: "fit-content",
-                },
-            });
+            Toaster({ message: `${errorObj.response?.data.error.message}`, toastType: "error" });
         } finally {
             setIsLoading(false);
         }
