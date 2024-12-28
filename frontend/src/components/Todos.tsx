@@ -4,11 +4,11 @@ import useAuthenticatedQuery from "../hooks/useCustomQuery";
 import { ITodo } from "../interfaces";
 import { todoValidation } from "../validation";
 import InputMessageError from "./InputMessageError";
+import Toaster from "./toaster";
 import Button from "./ui/Button";
 import Input from "./ui/Input";
 import Modal from "./ui/Modal";
 import Textarea from "./ui/Textarea";
-import Toaster from "./toaster";
 
 interface IProps {}
 
@@ -24,11 +24,14 @@ function Todos({}: IProps) {
     const userData = userDataString ? JSON.parse(userDataString) : null;
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [currentTodo, setCurrentTodo] = useState<ITodo>(todoDefaultValue);
+    const [isLoadingStatus, setIsLoadingStatus] = useState(false);
+    const [queryVersion, setQueryVersion] = useState(1);
+    const [isOpenConfirmModal, setIsOpenConfirmModal] = useState(false);
 
     // ----RENDER DATA----
 
     const { data, isLoading, error } = useAuthenticatedQuery({
-        queryKey: ["todos"],
+        queryKey: ["Todos", `${queryVersion}`],
         url: "/users/me?populate=*",
         config: {
             headers: {
@@ -38,6 +41,14 @@ function Todos({}: IProps) {
     });
 
     // ----HANDLERS----
+
+    const closeConfirmModal = () => {
+        setIsOpenConfirmModal(false);
+    };
+    const openConfirmModal = (todo: ITodo) => {
+        setCurrentTodo(todo);
+        setIsOpenConfirmModal(true);
+    };
 
     const isModalOpen = (todo: ITodo) => {
         setIsOpen(true);
@@ -57,10 +68,12 @@ function Todos({}: IProps) {
 
     const onSubmitEdit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        setIsLoadingStatus(true);
 
         const { description, id, title } = currentTodo;
         if (todoValidation(currentTodo).description || todoValidation(currentTodo).title) {
             setErrors(todoValidation(currentTodo));
+            setIsLoadingStatus(false);
             return;
         }
 
@@ -82,10 +95,31 @@ function Todos({}: IProps) {
                 }
             );
             isModalClose();
-
+            setQueryVersion((prev) => prev + 1);
             Toaster({ message: "successfully, Todo is updated!", toastType: "success" });
         } catch (error) {
-            console.log(error);
+            console.error(error);
+        } finally {
+            setIsLoadingStatus(false);
+        }
+    };
+
+    const removeTodo = async () => {
+        const { id } = currentTodo;
+        setIsLoadingStatus(true);
+        try {
+            await axiosInstance.delete(`/todos/${id}`, {
+                headers: {
+                    Authorization: `bearer ${userData.jwt}`,
+                },
+            });
+            closeConfirmModal();
+            setQueryVersion((prev) => prev + 1);
+            Toaster({ message: "successfully, Todo is Deleted!", toastType: "success" });
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setIsLoadingStatus(false);
         }
     };
 
@@ -103,8 +137,8 @@ function Todos({}: IProps) {
                                 <Button size="sm" onClick={() => isModalOpen(todo)}>
                                     Edit
                                 </Button>
-                                <Button variant="danger" size="sm">
-                                    Delete
+                                <Button variant="danger" size="sm" onClick={() => openConfirmModal(todo)}>
+                                    Remove
                                 </Button>
                             </span>
                         </li>
@@ -113,6 +147,7 @@ function Todos({}: IProps) {
             ) : (
                 <h3>No Todos Found</h3>
             )}
+            {/* Update TODO MODAL */}
 
             <Modal isOpen={isOpen} closeModal={isModalClose} title="Edit Todo">
                 <form className="space-y-3" onSubmit={onSubmitEdit}>
@@ -125,7 +160,7 @@ function Todos({}: IProps) {
                         {errors.description && <InputMessageError msg={errors.description} />}
                     </div>
                     <div className="flex items-center space-x-3">
-                        <Button type="submit" fullWidth variant={"outline"} className="bg-indigo-500 text-white active:bg-indigo-500" size={"sm"}>
+                        <Button type="submit" fullWidth variant={"outline"} className="bg-indigo-500 text-white active:bg-indigo-500" size={"sm"} isLoading={isLoadingStatus}>
                             Update
                         </Button>
                         <Button type="button" onClick={isModalClose} fullWidth variant={"cancel"} className="active:bg-gray-300" size={"sm"}>
@@ -133,6 +168,23 @@ function Todos({}: IProps) {
                         </Button>
                     </div>
                 </form>
+            </Modal>
+
+            {/* DELETE TODO CONFIRM MODAL */}
+            <Modal
+                isOpen={isOpenConfirmModal}
+                closeModal={closeConfirmModal}
+                title="Are you sure you want to remove this Todo from your Store?"
+                description="Deleting this Todo will remove it permanently from your inventory. Any associated data, sales history, and other related information will also be deleted. Please make sure this is the intended action."
+            >
+                <div className="flex items-center space-x-3">
+                    <Button fullWidth isLoading={isLoadingStatus} variant={"danger"} size={"sm"} onClick={removeTodo}>
+                        Yes, remove
+                    </Button>
+                    <Button fullWidth type="button" variant={"cancel"} size={"sm"} onClick={closeConfirmModal}>
+                        Cancel
+                    </Button>
+                </div>
             </Modal>
         </section>
     );
