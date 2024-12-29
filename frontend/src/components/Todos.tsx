@@ -9,6 +9,7 @@ import Button from "./ui/Button";
 import Input from "./ui/Input";
 import Modal from "./ui/Modal";
 import Textarea from "./ui/Textarea";
+import TodoSkeleton from "./ui/TodoSkeleton";
 
 interface IProps {}
 
@@ -123,7 +124,16 @@ function Todos({}: IProps) {
         }
     };
 
-    if (isLoading) return <h3>Loading.....</h3>;
+    if (isLoading) {
+        return (
+            <div>
+                {Array.from({ length: 3 }, (_, index) => (
+                    <TodoSkeleton key={index} />
+                ))}
+            </div>
+        );
+    }
+
     if (error) return "An error has occurred: " + error.message;
 
     return (
