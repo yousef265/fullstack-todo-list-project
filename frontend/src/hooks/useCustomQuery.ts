@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "../config/axios.config";
 import { IAuthenticatedQuery } from "./../interfaces/index";
 
-const useAuthenticatedQuery = ({ queryKey, url, config }: IAuthenticatedQuery) => {
+const useCustomQuery = ({ queryKey, url, config }: IAuthenticatedQuery) => {
     return useQuery({
         queryKey,
         queryFn: async () => {
@@ -12,4 +12,4 @@ const useAuthenticatedQuery = ({ queryKey, url, config }: IAuthenticatedQuery) =
     });
 };
 
-export default useAuthenticatedQuery;
+export default useCustomQuery;
