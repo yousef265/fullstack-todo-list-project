@@ -1,3 +1,4 @@
+import Paginator from "../components/Paginator";
 import useCustomQuery from "../hooks/useCustomQuery";
 
 interface IProps {}
@@ -29,15 +30,16 @@ function TodoListPage({}: IProps) {
         <>
             {data.data.length ? (
                 <ul className="text-white space-y-3">
-                    {data.data.map(({ id, attributes }: { id: number; attributes: { title: string } }, index: number) => (
+                    {data.data.map(({ id, attributes: { title } }: { id: number; attributes: { title: string } }, index: number) => (
                         <li key={id} className="p-3 rounded-lg flex items-center justify-between even:bg-gray-800 odd:bg-black hover:bg-gray-700">
-                            <span>{`${index + 1}- ${attributes.title}`}</span>
+                            <span>{`${index + 1}- ${title}`}</span>
                         </li>
                     ))}
                 </ul>
             ) : (
                 <h3>No Todos Found...</h3>
             )}
+            <Paginator />
         </>
     );
 }
