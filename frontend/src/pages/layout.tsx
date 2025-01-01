@@ -7,8 +7,7 @@ function RootLayout() {
             <div className="bg-gray-600">
                 <div className="container space-y-5 py-5 min-h-screen">
                     <Navbar />
-
-                    <div className="relative max-w-3xl mx-auto p-2">
+                    <div className="relative max-w-3xl mx-auto px-2">
                         <Outlet />
                     </div>
                 </div>

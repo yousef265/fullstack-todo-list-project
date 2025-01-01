@@ -5,8 +5,10 @@ import LoginPage from "../pages/Login";
 import RegisterPage from "../pages/Register";
 import NotFoundPage from "../pages/NotFound";
 import ProtectedRoute from "../components/auth/ProtectedRoute";
+import TodoListPage from "../pages/TodoList";
 
-const userDataString = localStorage.getItem("loggedInUser");
+const storageKey = "loggedInUser";
+const userDataString = localStorage.getItem(storageKey);
 const userData = userDataString ? JSON.parse(userDataString) : null;
 
 const routes = createRoutesFromElements(
@@ -35,6 +37,14 @@ const routes = createRoutesFromElements(
                 element={
                     <ProtectedRoute isAllowed={!userData} redirectPath="/">
                         <RegisterPage />
+                    </ProtectedRoute>
+                }
+            />
+            <Route
+                path="todosList"
+                element={
+                    <ProtectedRoute isAllowed={userData} redirectPath="/">
+                        <TodoListPage />
                     </ProtectedRoute>
                 }
             />

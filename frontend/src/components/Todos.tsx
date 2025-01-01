@@ -1,3 +1,4 @@
+import { faker } from "@faker-js/faker";
 import { ChangeEvent, useState } from "react";
 import axiosInstance from "../config/axios.config";
 import useCustomQuery from "../hooks/useCustomQuery";
@@ -10,10 +11,12 @@ import Input from "./ui/Input";
 import Modal from "./ui/Modal";
 import Textarea from "./ui/Textarea";
 import TodoSkeleton from "./ui/TodoSkeleton";
-import { faker } from "@faker-js/faker";
 interface IProps {}
 
 function Todos({}: IProps) {
+    const storageKey = "loggedInUser";
+    const userDataString = localStorage.getItem(storageKey);
+    const userData = userDataString ? JSON.parse(userDataString) : null;
     const todoDefaultValue: ITodo = {
         id: 0,
         title: "",
@@ -23,11 +26,9 @@ function Todos({}: IProps) {
         title: "",
         description: "",
     });
-    const userData = JSON.parse(localStorage.getItem("loggedInUser") || "{}");
     const [currentTodo, setCurrentTodo] = useState<ITodo>(todoDefaultValue);
     const [isLoadingStatus, setIsLoadingStatus] = useState<boolean>(false);
     const [queryVersion, setQueryVersion] = useState<number>(1);
-
     const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
     const [isPostModalOpen, setIsPostModalOpen] = useState<boolean>(false);
@@ -176,7 +177,7 @@ function Todos({}: IProps) {
 
     // ----POST NEW TODO----
     const generateTodos = async () => {
-        for (let i = 1; i < 10; i++)
+        for (let i = 0; i < 10; i++)
             try {
                 await axiosInstance.post(
                     `/todos`,
@@ -196,6 +197,7 @@ function Todos({}: IProps) {
             } catch (error) {
                 console.error(error);
             }
+        setQueryVersion((prev) => ++prev);
     };
 
     // ----HANDLE COMPONENT LOADING STATUS----

@@ -1,10 +1,17 @@
-import { ILogin, INavLinks, IRegister } from "./../interfaces/index";
+import { ILogin, ILinks, IRegister } from "./../interfaces/index";
 
-export const NavLinks: INavLinks[] = [
+export const AuthLinks: ILinks[] = [
     {
         name: "Home",
         to: "/",
     },
+    {
+        name: "Todos",
+        to: "todosList",
+    },
+];
+
+export const UnAuthLinks: ILinks[] = [
     {
         name: "Login",
         to: "login",

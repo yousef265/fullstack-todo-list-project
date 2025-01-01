@@ -1,6 +1,6 @@
 import { AxiosRequestConfig } from "axios";
 import { TLoginName, TRegisterName } from "./../types/index";
-export interface INavLinks {
+export interface ILinks {
     name: string;
     to: string;
 }
