@@ -10,7 +10,7 @@ import Input from "./ui/Input";
 import Modal from "./ui/Modal";
 import Textarea from "./ui/Textarea";
 import TodoSkeleton from "./ui/TodoSkeleton";
-
+import { faker } from "@faker-js/faker";
 interface IProps {}
 
 function Todos({}: IProps) {
@@ -173,10 +173,41 @@ function Todos({}: IProps) {
             setIsLoadingStatus(false);
         }
     };
+
+    // ----POST NEW TODO----
+    const generateTodos = async () => {
+        for (let i = 1; i < 10; i++)
+            try {
+                await axiosInstance.post(
+                    `/todos`,
+                    {
+                        data: {
+                            title: faker.lorem.words({ min: 1, max: 5 }),
+                            description: faker.lorem.words({ min: 3, max: 10 }),
+                            user: [`${userData.user.id}`],
+                        },
+                    },
+                    {
+                        headers: {
+                            Authorization: `bearer ${userData.jwt}`,
+                        },
+                    }
+                );
+            } catch (error) {
+                console.error(error);
+            }
+    };
+
     // ----HANDLE COMPONENT LOADING STATUS----
     if (isLoading) {
         return (
             <div>
+                <div role="status" className="animate-pulse">
+                    <div className="flex my-5 w-fit mx-auto space-x-4 rounded-md">
+                        <div className="h-10 w-[129px] bg-gray-300 rounded-md "></div>
+                        <div className="h-10 w-[135px] bg-gray-300 rounded-md "></div>
+                    </div>
+                </div>
                 {Array.from({ length: 3 }, (_, index) => (
                     <TodoSkeleton key={index} />
                 ))}
@@ -189,11 +220,16 @@ function Todos({}: IProps) {
 
     return (
         <section>
-            <div className="mb-5">
-                <Button type="submit" variant={"outline"} className=" mx-auto bg-indigo-500 text-white active:bg-indigo-500" size={"sm"} onClick={togglePostModal}>
+            <div className="flex my-5 w-fit mx-auto space-x-4">
+                <Button variant={"outline"} className="bg-indigo-500 text-white active:bg-indigo-500" size={"sm"} onClick={togglePostModal}>
                     Post New Todo
                 </Button>
+
+                <Button className="text-white active:bg-indigo-600" size={"sm"} onClick={generateTodos}>
+                    Generate Todos
+                </Button>
             </div>
+
             {/* Render Todos */}
             {data.todos.length ? (
                 <ul className="text-white space-y-3">
