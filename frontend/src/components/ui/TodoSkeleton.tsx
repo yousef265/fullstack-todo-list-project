@@ -1,6 +1,6 @@
 function TodoSkeleton() {
     return (
-        <div role="status" className="animate-pulse p-2">
+        <div role="status" className="animate-pulse py-2">
             <div className="flex items-center justify-between bg-gray-500 p-2 rounded-md">
                 <div>
                     <div className="w-32 md:w-64 h-2 bg-gray-300 rounded-md"></div>
