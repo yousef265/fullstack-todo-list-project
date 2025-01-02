@@ -63,7 +63,7 @@ function RegisterPage({}: IProps) {
                 <h2 className="text-center mb-4 text-2xl md:text-3xl font-semibold">Register to get access!</h2>
                 <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
                     {RenderRegisterInputs}
-                    <Button type="submit" fullWidth isLoading={isLoading}>
+                    <Button type="submit" fullWidth isLoading={isLoading} disabled={isLoading}>
                         Register
                     </Button>
                     <p className="text-center text-base font-semibold text-slate-300 space-x-2">

@@ -1,18 +1,25 @@
 import Button from "./ui/Button";
 
-interface IProps {}
+interface IProps {
+    page: number;
+    pageCount: number;
+    total: number;
+    isLoading: boolean;
+    clickNext: () => void;
+    clickPrev: () => void;
+}
 
-const Paginator = ({}: IProps) => {
+const Paginator = ({ page, pageCount, total, isLoading, clickNext, clickPrev }: IProps) => {
     return (
-        <div className="flex justify-center items-center mt-10 left-1/2 -translate-x-1/2  fixed bottom-10">
+        <div className="flex justify-center items-center my-10 left-1/2 -translate-x-1/2  relative bottom-0">
             <p className="text-sm text-gray-300 mx-3">
-                Page <span className="mx-1 font-bold text-white">1</span> to
-                <span className="mx-1 font-bold text-white">3</span> of
-                <span className="mx-1 font-bold text-white">10</span> Records
+                Page <span className="mx-1 font-bold text-white">{page}</span> to
+                <span className="mx-1 font-bold text-white">{pageCount}</span> of
+                <span className="mx-1 font-bold text-white">{total}</span> Records
             </p>
 
             <div className="flex items-center space-x-2">
-                <Button type="button">
+                <Button type="button" onClick={clickPrev} disabled={page === 1 || isLoading} isLoading={isLoading}>
                     <div className="flex flex-row align-middle">
                         <svg className="w-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                             <path
@@ -25,7 +32,7 @@ const Paginator = ({}: IProps) => {
                     </div>
                 </Button>
 
-                <Button type="button">
+                <Button type="button" onClick={clickNext} disabled={page === pageCount || isLoading} isLoading={isLoading}>
                     <div className="flex flex-row align-middle">
                         <span className="mr-2">Next</span>
                         <svg className="w-5 ml-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">

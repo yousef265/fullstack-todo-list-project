@@ -265,7 +265,16 @@ function Todos({}: IProps) {
                         {errors.description && <InputMessageError msg={errors.description} />}
                     </div>
                     <div className="flex items-center space-x-3">
-                        <Button type="button" fullWidth variant={"outline"} className="bg-indigo-500 text-white active:bg-indigo-500" size={"sm"} isLoading={isLoadingStatus} onClick={postNewTodo}>
+                        <Button
+                            type="button"
+                            fullWidth
+                            variant={"outline"}
+                            className="bg-indigo-500 text-white active:bg-indigo-500"
+                            size={"sm"}
+                            isLoading={isLoadingStatus}
+                            onClick={postNewTodo}
+                            disabled={isLoadingStatus}
+                        >
                             Create
                         </Button>
                         <Button type="button" onClick={togglePostModal} fullWidth variant={"cancel"} className="active:bg-gray-300" size={"sm"}>
@@ -287,7 +296,16 @@ function Todos({}: IProps) {
                         {errors.description && <InputMessageError msg={errors.description} />}
                     </div>
                     <div className="flex items-center space-x-3">
-                        <Button type="button" fullWidth variant={"outline"} className="bg-indigo-500 text-white active:bg-indigo-500" size={"sm"} isLoading={isLoadingStatus} onClick={editTodo}>
+                        <Button
+                            type="button"
+                            fullWidth
+                            variant={"outline"}
+                            className="bg-indigo-500 text-white active:bg-indigo-500"
+                            size={"sm"}
+                            isLoading={isLoadingStatus}
+                            onClick={editTodo}
+                            disabled={isLoadingStatus}
+                        >
                             Update
                         </Button>
                         <Button type="button" onClick={() => toggleEditModal()} fullWidth variant={"cancel"} className="active:bg-gray-300" size={"sm"}>
@@ -305,7 +323,7 @@ function Todos({}: IProps) {
                 description="Deleting this Todo will remove it permanently from your inventory. Any associated data, sales history, and other related information will also be deleted. Please make sure this is the intended action."
             >
                 <div className="flex items-center space-x-3">
-                    <Button fullWidth isLoading={isLoadingStatus} variant={"danger"} size={"sm"} onClick={removeTodo}>
+                    <Button fullWidth isLoading={isLoadingStatus} variant={"danger"} size={"sm"} onClick={removeTodo} disabled={isLoadingStatus}>
                         Yes, remove
                     </Button>
                     <Button fullWidth type="button" variant={"cancel"} size={"sm"} onClick={() => toggleConfirmModal()}>
