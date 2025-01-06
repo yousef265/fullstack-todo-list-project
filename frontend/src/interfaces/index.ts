@@ -30,11 +30,11 @@ export interface ILoginFormInput {
 
 export interface IErrorResponse {
     error: {
-        // details?: {
-        //   errors: {
-        //     message: string;
-        //   }[];
-        // };
+        details?: {
+            errors: {
+                message: string;
+            }[];
+        };
         message?: string;
     };
 }

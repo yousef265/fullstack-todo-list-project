@@ -4,6 +4,9 @@ import useCustomQuery from "../hooks/useCustomQuery";
 import Button from "../components/ui/Button";
 import axiosInstance from "../config/axios.config";
 import { faker } from "@faker-js/faker";
+import ErrorHandler from "../components/errors/ErrorHandler";
+import { IErrorResponse } from "../interfaces";
+import { AxiosError } from "axios";
 
 interface IProps {}
 
@@ -74,7 +77,10 @@ function TodoListPage({}: IProps) {
     }
 
     // ----HANDLE COMPONENT ERROR STATUS----
-    if (error) return "An error has occurred: " + error.message;
+    if (error) {
+        const errorObj = error as AxiosError<IErrorResponse>;
+        return <ErrorHandler statusCode={errorObj.response?.status} title={errorObj.response?.data.error.message} />;
+    }
 
     return (
         <section>

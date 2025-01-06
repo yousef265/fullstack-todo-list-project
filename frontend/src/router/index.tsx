@@ -6,6 +6,7 @@ import RegisterPage from "../pages/Register";
 import NotFoundPage from "../pages/NotFound";
 import ProtectedRoute from "../components/auth/ProtectedRoute";
 import TodoListPage from "../pages/TodoList";
+import ErrorHandler from "../components/errors/ErrorHandler";
 
 const storageKey = "loggedInUser";
 const userDataString = localStorage.getItem(storageKey);
@@ -15,7 +16,7 @@ const routes = createRoutesFromElements(
     <>
         {/*  ROOT LAYOUT */}
 
-        <Route path="/" element={<RootLayout />}>
+        <Route path="/" element={<RootLayout />} errorElement={<ErrorHandler />}>
             <Route
                 index
                 element={

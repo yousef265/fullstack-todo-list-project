@@ -2,7 +2,7 @@ import { faker } from "@faker-js/faker";
 import { ChangeEvent, useCallback, useMemo, useState } from "react";
 import axiosInstance from "../config/axios.config";
 import useCustomQuery from "../hooks/useCustomQuery";
-import { ITodo } from "../interfaces";
+import { IErrorResponse, ITodo } from "../interfaces";
 import { todoValidation } from "../validation";
 import InputMessageError from "./InputMessageError";
 import Toaster from "./toaster";
@@ -11,6 +11,9 @@ import Input from "./ui/Input";
 import Modal from "./ui/Modal";
 import Textarea from "./ui/Textarea";
 import TodoSkeleton from "./ui/TodoSkeleton";
+import { AxiosError } from "axios";
+import ErrorHandler from "./errors/ErrorHandler";
+
 interface IProps {}
 
 function Todos({}: IProps) {
@@ -220,7 +223,11 @@ function Todos({}: IProps) {
     }
 
     // ----HANDLE COMPONENT ERROR STATUS----
-    if (error) return "An error has occurred: " + error.message;
+
+    if (error) {
+        const errorObj = error as AxiosError<IErrorResponse>;
+        return <ErrorHandler statusCode={errorObj.response?.status} title={errorObj.response?.data.error.message} />;
+    }
 
     return (
         <section>
