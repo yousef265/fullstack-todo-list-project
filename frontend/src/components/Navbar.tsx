@@ -4,6 +4,7 @@ import { Link, NavLink, useLocation } from "react-router-dom";
 import logo from "../../public/logo.webp";
 import { AuthLinks, UnAuthLinks } from "../data";
 import Button from "./ui/Button";
+import { memo } from "react";
 
 function classNames(...classes: string[]): string {
     return classes.filter(Boolean).join(" ");
@@ -89,4 +90,4 @@ const Navbar = () => {
     );
 };
 
-export default Navbar;
+export default memo(Navbar);

@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useCallback, useMemo, useState } from "react";
 import axiosInstance from "../config/axios.config";
 import useCustomQuery from "../hooks/useCustomQuery";
 import { ITodo } from "../interfaces";
@@ -14,9 +14,11 @@ import TodoSkeleton from "./ui/TodoSkeleton";
 interface IProps {}
 
 function Todos({}: IProps) {
-    const storageKey = "loggedInUser";
-    const userDataString = localStorage.getItem(storageKey);
-    const userData = userDataString ? JSON.parse(userDataString) : null;
+    const userData = useMemo(() => {
+        const storageKey = "loggedInUser";
+        const userDataString = localStorage.getItem(storageKey);
+        return userDataString ? JSON.parse(userDataString) : null;
+    }, []);
     const todoDefaultValue: ITodo = {
         id: 0,
         title: "",
@@ -50,18 +52,18 @@ function Todos({}: IProps) {
 
     // ----HANDLERS----
 
-    const toggleEditModal = (todo: ITodo | null = null) => {
-        setIsEditModalOpen(!isEditModalOpen);
+    const toggleEditModal = useCallback((todo: ITodo | null = null) => {
+        setIsEditModalOpen((prev) => !prev);
         setCurrentTodo(todo || todoDefaultValue);
         setErrors({ description: "", title: "" });
-    };
+    }, []);
 
-    const toggleConfirmModal = (todo: ITodo | null = null) => {
-        setIsConfirmModalOpen(!isConfirmModalOpen);
+    const toggleConfirmModal = useCallback((todo: ITodo | null = null) => {
+        setIsConfirmModalOpen((prev) => !prev);
         setCurrentTodo(todo || todoDefaultValue);
-    };
+    }, []);
 
-    const togglePostModal = () => setIsPostModalOpen(!isPostModalOpen);
+    const togglePostModal = useCallback(() => setIsPostModalOpen((prev) => !prev), []);
 
     // ----REMOVE TODO----
 
@@ -87,10 +89,10 @@ function Todos({}: IProps) {
 
     // ----UPDATE TODO----
 
-    const onChangeEdit = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const onChangeEdit = useCallback((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = event.target;
         setCurrentTodo((prev) => ({ ...prev, [name]: value }));
-    };
+    }, []);
 
     const editTodo = async () => {
         setIsLoadingStatus(true);
@@ -131,10 +133,10 @@ function Todos({}: IProps) {
     };
 
     // ----POST NEW TODO----
-    const onChangePost = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const onChangePost = useCallback((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = event.target;
         setPostTodoData((prev) => ({ ...prev, [name]: value }));
-    };
+    }, []);
 
     const postNewTodo = async () => {
         setIsLoadingStatus(true);
@@ -176,7 +178,7 @@ function Todos({}: IProps) {
     };
 
     // ----POST NEW TODO----
-    const generateTodos = async () => {
+    const generateTodos = useCallback(async () => {
         for (let i = 0; i < 10; i++)
             try {
                 await axiosInstance.post(
@@ -198,7 +200,7 @@ function Todos({}: IProps) {
                 console.error(error);
             }
         setQueryVersion((prev) => ++prev);
-    };
+    }, []);
 
     // ----HANDLE COMPONENT LOADING STATUS----
     if (isLoading) {
@@ -254,83 +256,89 @@ function Todos({}: IProps) {
             )}
 
             {/* POST TODO MODAL */}
-            <Modal isOpen={isPostModalOpen} closeModal={togglePostModal} title="Post New Todo">
-                <form className="space-y-3">
-                    <div>
-                        <Input name="title" value={postTodoData.title} onChange={onChangePost} placeholder="Todo Title" />
-                        {errors.title && <InputMessageError msg={errors.title} />}
-                    </div>
-                    <div>
-                        <Textarea name="description" value={postTodoData.description} onChange={onChangePost} placeholder="Todo Description" />
-                        {errors.description && <InputMessageError msg={errors.description} />}
-                    </div>
-                    <div className="flex items-center space-x-3">
-                        <Button
-                            type="button"
-                            fullWidth
-                            variant={"outline"}
-                            className="bg-indigo-500 text-white active:bg-indigo-500"
-                            size={"sm"}
-                            isLoading={isLoadingStatus}
-                            onClick={postNewTodo}
-                            disabled={isLoadingStatus}
-                        >
-                            Create
-                        </Button>
-                        <Button type="button" onClick={togglePostModal} fullWidth variant={"cancel"} className="active:bg-gray-300" size={"sm"}>
-                            Cancel
-                        </Button>
-                    </div>
-                </form>
-            </Modal>
+            {isPostModalOpen && (
+                <Modal isOpen={isPostModalOpen} closeModal={togglePostModal} title="Post New Todo">
+                    <form className="space-y-3">
+                        <div>
+                            <Input name="title" value={postTodoData.title} onChange={onChangePost} placeholder="Todo Title" />
+                            {errors.title && <InputMessageError msg={errors.title} />}
+                        </div>
+                        <div>
+                            <Textarea name="description" value={postTodoData.description} onChange={onChangePost} placeholder="Todo Description" />
+                            {errors.description && <InputMessageError msg={errors.description} />}
+                        </div>
+                        <div className="flex items-center space-x-3">
+                            <Button
+                                type="button"
+                                fullWidth
+                                variant={"outline"}
+                                className="bg-indigo-500 text-white active:bg-indigo-500"
+                                size={"sm"}
+                                isLoading={isLoadingStatus}
+                                onClick={postNewTodo}
+                                disabled={isLoadingStatus}
+                            >
+                                Create
+                            </Button>
+                            <Button type="button" onClick={togglePostModal} fullWidth variant={"cancel"} className="active:bg-gray-300" size={"sm"}>
+                                Cancel
+                            </Button>
+                        </div>
+                    </form>
+                </Modal>
+            )}
 
             {/* Update TODO MODAL */}
-            <Modal isOpen={isEditModalOpen} closeModal={toggleEditModal} title="Edit Todo">
-                <form className="space-y-3">
-                    <div>
-                        <Input name="title" value={currentTodo.title} onChange={onChangeEdit} placeholder="Todo Title" />
-                        {errors.title && <InputMessageError msg={errors.title} />}
-                    </div>
-                    <div>
-                        <Textarea name="description" value={currentTodo.description} onChange={onChangeEdit} placeholder="Todo Description" />
-                        {errors.description && <InputMessageError msg={errors.description} />}
-                    </div>
+            {isEditModalOpen && (
+                <Modal isOpen={isEditModalOpen} closeModal={toggleEditModal} title="Edit Todo">
+                    <form className="space-y-3">
+                        <div>
+                            <Input name="title" value={currentTodo.title} onChange={onChangeEdit} placeholder="Todo Title" />
+                            {errors.title && <InputMessageError msg={errors.title} />}
+                        </div>
+                        <div>
+                            <Textarea name="description" value={currentTodo.description} onChange={onChangeEdit} placeholder="Todo Description" />
+                            {errors.description && <InputMessageError msg={errors.description} />}
+                        </div>
+                        <div className="flex items-center space-x-3">
+                            <Button
+                                type="button"
+                                fullWidth
+                                variant={"outline"}
+                                className="bg-indigo-500 text-white active:bg-indigo-500"
+                                size={"sm"}
+                                isLoading={isLoadingStatus}
+                                onClick={editTodo}
+                                disabled={isLoadingStatus}
+                            >
+                                Update
+                            </Button>
+                            <Button type="button" onClick={() => toggleEditModal()} fullWidth variant={"cancel"} className="active:bg-gray-300" size={"sm"}>
+                                Cancel
+                            </Button>
+                        </div>
+                    </form>
+                </Modal>
+            )}
+
+            {/* DELETE TODO CONFIRM MODAL */}
+            {isConfirmModalOpen && (
+                <Modal
+                    isOpen={isConfirmModalOpen}
+                    closeModal={toggleConfirmModal}
+                    title="Are you sure you want to remove this Todo from your Store?"
+                    description="Deleting this Todo will remove it permanently from your inventory. Any associated data, sales history, and other related information will also be deleted. Please make sure this is the intended action."
+                >
                     <div className="flex items-center space-x-3">
-                        <Button
-                            type="button"
-                            fullWidth
-                            variant={"outline"}
-                            className="bg-indigo-500 text-white active:bg-indigo-500"
-                            size={"sm"}
-                            isLoading={isLoadingStatus}
-                            onClick={editTodo}
-                            disabled={isLoadingStatus}
-                        >
-                            Update
+                        <Button fullWidth isLoading={isLoadingStatus} variant={"danger"} size={"sm"} onClick={removeTodo} disabled={isLoadingStatus}>
+                            Yes, remove
                         </Button>
-                        <Button type="button" onClick={() => toggleEditModal()} fullWidth variant={"cancel"} className="active:bg-gray-300" size={"sm"}>
+                        <Button fullWidth type="button" variant={"cancel"} size={"sm"} onClick={() => toggleConfirmModal()}>
                             Cancel
                         </Button>
                     </div>
-                </form>
-            </Modal>
-
-            {/* DELETE TODO CONFIRM MODAL */}
-            <Modal
-                isOpen={isConfirmModalOpen}
-                closeModal={toggleConfirmModal}
-                title="Are you sure you want to remove this Todo from your Store?"
-                description="Deleting this Todo will remove it permanently from your inventory. Any associated data, sales history, and other related information will also be deleted. Please make sure this is the intended action."
-            >
-                <div className="flex items-center space-x-3">
-                    <Button fullWidth isLoading={isLoadingStatus} variant={"danger"} size={"sm"} onClick={removeTodo} disabled={isLoadingStatus}>
-                        Yes, remove
-                    </Button>
-                    <Button fullWidth type="button" variant={"cancel"} size={"sm"} onClick={() => toggleConfirmModal()}>
-                        Cancel
-                    </Button>
-                </div>
-            </Modal>
+                </Modal>
+            )}
         </section>
     );
 }

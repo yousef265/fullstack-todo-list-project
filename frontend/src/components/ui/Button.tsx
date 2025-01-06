@@ -1,6 +1,6 @@
 import { cn } from "../../lib/utils";
 import { VariantProps, cva } from "class-variance-authority";
-import { HTMLAttributes, ReactNode } from "react";
+import { HTMLAttributes, memo, ReactNode } from "react";
 
 const buttonVariants = cva(
     "flex items-center justify-center rounded-lg font-medium text-white duration-100 dark:text-black disabled:bg-indigo-400 disabled:hover:bg-indigo-400 disabled:cursor-not-allowed ",
@@ -55,4 +55,4 @@ const Button = ({ type, variant, size, fullWidth, isLoading, className, children
     );
 };
 
-export default Button;
+export default memo(Button);

@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, memo, useCallback, useMemo, useState } from "react";
 import Paginator from "../components/Paginator";
 import useCustomQuery from "../hooks/useCustomQuery";
 import Button from "../components/ui/Button";
@@ -8,9 +8,12 @@ import { faker } from "@faker-js/faker";
 interface IProps {}
 
 function TodoListPage({}: IProps) {
-    const storageKey = "loggedInUser";
-    const userDataString = localStorage.getItem(storageKey);
-    const userData = userDataString ? JSON.parse(userDataString) : null;
+    const userData = useMemo(() => {
+        const storageKey = "loggedInUser";
+        const userDataString = localStorage.getItem(storageKey);
+        return userDataString ? JSON.parse(userDataString) : null;
+    }, []);
+
     const [page, setPage] = useState<number>(1);
     const [pageSize, setPageSize] = useState<number>(10);
     const [sortBy, setSortBy] = useState<string>("ASC");
@@ -27,19 +30,12 @@ function TodoListPage({}: IProps) {
     });
 
     // -----HANDLERS-----
-    const clickNext = () => setPage((prev) => prev + 1);
+    const clickNext = useCallback(() => setPage((prev) => prev + 1), []);
+    const clickPrev = useCallback(() => setPage((prev) => prev - 1), []);
+    const changePageSize = useCallback((event: ChangeEvent<HTMLSelectElement>) => setPageSize(+event.target.value), []);
+    const changeSortBy = useCallback((event: ChangeEvent<HTMLSelectElement>) => setSortBy(event.target.value), []);
 
-    const clickPrev = () => setPage((prev) => prev - 1);
-
-    const changePageSize = (event: ChangeEvent<HTMLSelectElement>) => {
-        setPageSize(+event.target.value);
-    };
-
-    const changeSortBy = (event: ChangeEvent<HTMLSelectElement>) => {
-        setSortBy(event.target.value);
-    };
-
-    const generateTodos = async () => {
+    const generateTodos = useCallback(async () => {
         for (let i = 0; i < 10; i++)
             try {
                 await axiosInstance.post(
@@ -61,7 +57,7 @@ function TodoListPage({}: IProps) {
                 console.error(error);
             }
         setQueryVersion((prev) => ++prev);
-    };
+    }, []);
 
     // ----HANDLE COMPONENT LOADING STATUS----
     if (isLoading) {
@@ -118,4 +114,4 @@ function TodoListPage({}: IProps) {
     );
 }
 
-export default TodoListPage;
+export default memo(TodoListPage);
